@@ -20,35 +20,35 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 def test_flow_with_jump(tmpdir):
     def _validate(f):
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r1']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r3']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r4']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r5']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r6']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r8']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r9']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         node = f._pod_nodes['r10']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
             assert node.peas_args['peas'][0] == node.tail_args
@@ -97,14 +97,14 @@ def test_simple_flow(restful):
         f.index(inputs=bytes_fn)
 
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
     assert 'gateway' not in f
 
     node = f._pod_nodes['pod0']
-    assert node.head_args.socket_in == SocketType.PULL_BIND
-    assert node.tail_args.socket_out == SocketType.PUSH_BIND
+    assert node.head_args.socket_in == SocketType.ROUTER_BIND
+    assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
     for name, node in f._pod_nodes.items():
         assert node.peas_args['peas'][0] == node.head_args
@@ -132,35 +132,35 @@ def test_flow_identical(tmpdir):
 
     with a as f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['chunk_seg']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
         assert node.head_args.socket_out == SocketType.ROUTER_BIND
         for arg in node.peas_args['peas']:
             assert arg.socket_in == SocketType.DEALER_CONNECT
             assert arg.socket_out == SocketType.PUSH_CONNECT
         assert node.tail_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['wqncode1']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
         assert node.head_args.socket_out == SocketType.ROUTER_BIND
         for arg in node.peas_args['peas']:
             assert arg.socket_in == SocketType.DEALER_CONNECT
             assert arg.socket_out == SocketType.PUSH_CONNECT
         assert node.tail_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['encode2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
         assert node.head_args.socket_out == SocketType.ROUTER_BIND
         for arg in node.peas_args['peas']:
             assert arg.socket_in == SocketType.DEALER_CONNECT
             assert arg.socket_out == SocketType.PUSH_CONNECT
         assert node.tail_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
 
 @pytest.mark.parametrize('restful', [False, True])
@@ -197,44 +197,44 @@ def test_py_client():
 
     with f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r1']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r3']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r4']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r5']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r6']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r8']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r9']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r10']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUSH_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
@@ -246,16 +246,16 @@ def test_dry_run_with_two_pathways_diverging_at_gateway():
 
     with f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r3']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
@@ -273,20 +273,20 @@ def test_dry_run_with_two_pathways_diverging_at_non_gateway():
 
     with f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r1']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r3']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
@@ -303,16 +303,16 @@ def test_refactor_num_part():
 
     with f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r1']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
@@ -330,20 +330,20 @@ def test_refactor_num_part_proxy():
 
     with f:
         node = f._pod_nodes['gateway']
-        assert node.head_args.socket_in == SocketType.PULL_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r1']
-        assert node.head_args.socket_in == SocketType.PULL_BIND
-        assert node.tail_args.socket_out == SocketType.PUB_BIND
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r2']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         node = f._pod_nodes['r3']
-        assert node.head_args.socket_in == SocketType.SUB_CONNECT
-        assert node.tail_args.socket_out == SocketType.PUSH_CONNECT
+        assert node.head_args.socket_in == SocketType.ROUTER_BIND
+        assert node.tail_args.socket_out == SocketType.DEALER_CONNECT
 
         for name, node in f._pod_nodes.items():
             assert node.peas_args['peas'][0] == node.head_args
@@ -621,9 +621,9 @@ def test_socket_types_2_remote_one_local():
 
     f.build()
 
-    assert f._pod_nodes['join'].head_args.socket_in == SocketType.PULL_BIND
-    assert f._pod_nodes['pod2'].tail_args.socket_out == SocketType.PUSH_CONNECT
-    assert f._pod_nodes['pod3'].tail_args.socket_out == SocketType.PUSH_CONNECT
+    assert f._pod_nodes['join'].head_args.socket_in == SocketType.ROUTER_BIND
+    assert f._pod_nodes['pod2'].tail_args.socket_out == SocketType.DEALER_CONNECT
+    assert f._pod_nodes['pod3'].tail_args.socket_out == SocketType.DEALER_CONNECT
 
 
 def test_socket_types_2_remote_one_local_input_socket_pull_connect_from_remote():
@@ -636,12 +636,10 @@ def test_socket_types_2_remote_one_local_input_socket_pull_connect_from_remote()
     )
 
     f.build()
-    for k, v in f:
-        print(f'{v.name}\tIN: {v.address_in}\t{v.address_out}')
 
-    assert f._pod_nodes['join'].head_args.socket_in == SocketType.PULL_BIND
-    assert f._pod_nodes['pod2'].tail_args.socket_out == SocketType.PUSH_CONNECT
-    assert f._pod_nodes['pod3'].tail_args.socket_out == SocketType.PUSH_CONNECT
+    assert f._pod_nodes['join'].head_args.socket_in == SocketType.ROUTER_BIND
+    assert f._pod_nodes['pod2'].tail_args.socket_out == SocketType.DEALER_CONNECT
+    assert f._pod_nodes['pod3'].tail_args.socket_out == SocketType.DEALER_CONNECT
 
 
 def test_single_document_flow_index():
