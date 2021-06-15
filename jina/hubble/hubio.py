@@ -15,7 +15,7 @@ from ..logging.profile import TimeContext
 from .helper import archive_package
 
 
-JINA_HUBBLE_REGISTRY = os.environ.get('JINA_HUBBLE_REGISTRY', 'https://hubble.jina.ai')
+JINA_HUBBLE_REGISTRY = os.environ.get('JINA_HUBBLE_REGISTRY', 'https://api.hubble.jina.ai')
 JINA_HUBBLE_PUSH_URL = urljoin(JINA_HUBBLE_REGISTRY, '/v1/executors')
 
 
